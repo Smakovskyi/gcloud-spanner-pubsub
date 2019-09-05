@@ -28,8 +28,12 @@ import com.google.pubsub.v1.*;
 import com.google.training.appdev.services.gcp.domain.Feedback;
 import com.google.training.appdev.services.gcp.languageapi.LanguageService;
 import com.google.training.appdev.services.gcp.spanner.SpannerService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class ConsoleApp {
+
+    static Logger logger = LoggerFactory.getLogger(ConsoleApp.class);
 
   public static void main(String... args) throws Exception {
 
@@ -104,6 +108,9 @@ public class ConsoleApp {
             public void receiveMessage(PubsubMessage message, AckReplyConsumer consumer) {
                 // TODO: Extract the message data as a JSON String
                 String jsonMessage = message.getData().toStringUtf8();
+                consumer.ack();
+                logger.info("\n\n**************\n\nId : " + message.getMessageId());
+                logger.info("\n\n**************\n\nData : " + jsonMessage);
                 consumer.ack();
                 try {
                     // Object mapper deserializes the JSON String
