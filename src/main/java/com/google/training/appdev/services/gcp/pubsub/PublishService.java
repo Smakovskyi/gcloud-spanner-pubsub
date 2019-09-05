@@ -39,7 +39,9 @@ import java.io.IOException;
 @Service
 public class PublishService {
     // TODO: Declare and initialize two Strings, PROJECT_ID and TOPIC_NAME
-
+    private static final String PROJECT_ID =
+            ServiceOptions.getDefaultProjectId();
+    private static final String TOPIC_NAME = "feedback";
     
 
     // END TODO
@@ -48,64 +50,26 @@ public class PublishService {
         // Generate a serialized JSON representation of the feedback object
         ObjectMapper mapper = new ObjectMapper();
         String feedbackMessage = mapper.writeValueAsString(feedback);
-
-        // TODO: Create a TopicName object for the feedback topic in the project
-
-        
-
-        // END TODO
-
-        // TODO: Declare a publisher for the topic
-        
-        
-
-        // END TODO
+        TopicName topicName = TopicName.create(PROJECT_ID, TOPIC_NAME);
+        Publisher publisher = null;
 
         // messageIdFuture will contain the MessageId when the Pub/Sub publish returns
         ApiFuture<String> messageIdFuture = null;
 
         try {
-
-            // TODO: Initialize the publisher using a builder and the topicName
-
-            
-
-            // END TODO
-            
-            // TODO: Copy the serialized message to a byte string
-
-            
-
-            // END TODO
-
-            // TODO: Create a Pub/Sub message using a builder; set the message data
-
-            
-
-            // END TODO
-
-            // TODO: Publish the message, assign to the messageIdFuture
-
-            
-
-            // END TODO
-        
+            publisher = Publisher.defaultBuilder(topicName).build();
+            ByteString data = ByteString.copyFromUtf8(feedbackMessage);
+            PubsubMessage message = PubsubMessage.newBuilder()
+                    .setData(data)
+                    .build();
+            messageIdFuture = publisher.publish(message);
         } finally {
-
-            // TODO: Get the messageId from the messageIdFuture
-
-            String messageId = "Replace string with: messageIdFuture.get();";
-
-            // END TODO
-
+            String messageId = messageIdFuture.get();
             System.out.println("published with message ID: " + messageId);
 
-            // TODO: Shutdown the publisher to free up resources
-
-            
-            
-
-            // END TODO
+            if (publisher!=null){
+                publisher.shutdown();
+            }
         }
 
         

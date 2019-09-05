@@ -15,6 +15,7 @@
  */
 package com.google.training.appdev.services.gcp.languageapi;
 
+import com.google.cloud.language.v1.AnalyzeSentimentResponse;
 import com.google.cloud.language.v1.Document;
 import com.google.cloud.language.v1.LanguageServiceClient;
 import com.google.cloud.language.v1.Sentiment;
@@ -28,32 +29,15 @@ public class LanguageService {
     }
 
     public float analyzeSentiment(String feedback)throws Exception{
-        // TODO: Create the LanguageServiceClient object
+        try( LanguageServiceClient languageServiceClient = LanguageServiceClient.create()) {
+            Document document = Document.newBuilder()
+                    .setContent(feedback)
+                    .setType(Document.Type.PLAIN_TEXT)
+                    .build();
 
-        
-            // TODO: Create a new Document object using the builder
-            // Set the content and type
-
-            
-
-
-            // END TODO
-
-            // TODO: Use the client to analyze the sentiment of the feedback
-
-            
-
-            // END TODO
-
-            // TODO: Return the sentiment score instead of 0.0f;
-
-            return 0.0f;
-
-            // END TODO
-        
-
-        // END TODO
-
+            AnalyzeSentimentResponse analyzeSentimentResponse = languageServiceClient.analyzeSentiment(document);
+            return analyzeSentimentResponse.getDocumentSentiment().getScore();
+        }
     }
     private LanguageService(){ }
 }
