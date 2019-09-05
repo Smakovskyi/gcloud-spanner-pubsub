@@ -51,6 +51,8 @@ public class ConsoleApp {
 
     try(SubscriptionAdminClient subscriptionAdminClient = SubscriptionAdminClient.create()){
         Subscription subscription = subscriptionAdminClient.createSubscription(subscriptionName, topicName, PushConfig.getDefaultInstance(), 0);
+    }catch(Exception ex){
+        ex.printStackTrace();
     }
     
 
